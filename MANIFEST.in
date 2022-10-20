@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include confederate *.css
+recursive-include confederate *.csv
+recursive-include confederate *.html
+recursive-include confederate *.ico
+recursive-include confederate *.js
+recursive-include confederate *.json
+recursive-include confederate *.md
+recursive-include confederate *.png
+recursive-include confederate *.py
+recursive-include confederate *.svg
+recursive-include confederate *.txt
+recursive-exclude confederate *.pyc
