@@ -185,5 +185,5 @@ user_data_fields = [
 fixtures=[
 	{"dt":"Client Script"},
 	{"dt":"Server Script"},
-	{"dt":"Report"},
+	{"dt""Report"},
 ]
