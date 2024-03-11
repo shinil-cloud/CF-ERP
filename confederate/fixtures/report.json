@@ -6133,6 +6133,17 @@
   "doctype": "Report",
   "filters": [
    {
+    "fieldname": "customer",
+    "fieldtype": "Link",
+    "label": "Customer",
+    "mandatory": 0,
+    "options": "Customer",
+    "parent": "Job Report",
+    "parentfield": "filters",
+    "parenttype": "Report",
+    "wildcard_filter": 0
+   },
+   {
     "fieldname": "status",
     "fieldtype": "Select",
     "label": "Status",
@@ -6144,11 +6155,22 @@
     "wildcard_filter": 0
    },
    {
-    "fieldname": "customer",
-    "fieldtype": "Link",
-    "label": "Customer",
+    "fieldname": "employee_name",
+    "fieldtype": "Data",
+    "label": "Assigned to",
     "mandatory": 0,
-    "options": "Customer",
+    "options": "Employee",
+    "parent": "Job Report",
+    "parentfield": "filters",
+    "parenttype": "Report",
+    "wildcard_filter": 0
+   },
+   {
+    "fieldname": "service_due",
+    "fieldtype": "Date",
+    "label": "Service Due Date",
+    "mandatory": 0,
+    "options": null,
     "parent": "Job Report",
     "parentfield": "filters",
     "parenttype": "Report",
@@ -6159,7 +6181,7 @@
   "javascript": "",
   "json": null,
   "letter_head": "Confederate",
-  "modified": "2024-03-06 15:40:06.887485",
+  "modified": "2024-03-11 10:47:58.763814",
   "module": "Projects",
   "name": "Job Report",
   "parent": null,
@@ -6170,7 +6192,7 @@
   "ref_doctype": "Task",
   "reference_report": null,
   "report_name": "Job Report",
-  "report_script": "results = frappe.get_all('Task',\n    fields=[\"name\", \"subject\", \"status\",\"customer\"],\n    filters=filters,\n    order_by=\"name DESC\"\n)\n\ncolumns = [\n    {\"fieldname\": \"name\", \"label\": _(\"Job\"), \"fieldtype\": \"Link\", \"options\": \"Task\", \"width\": 150},\n    {\"fieldname\": \"subject\", \"label\": _(\"Subject\"), \"fieldtype\": \"Data\", \"width\": 150},\n    {\"fieldname\": \"status\", \"label\": _(\"Status\"), \"fieldtype\": \"Data\", \"width\": 100},\n    {\"fieldname\": \"customer\", \"label\": _(\"Customer\"), \"fieldtype\": \"Link\", \"options\":\"Customer\",\"width\": 100},\n\n]\n\ndata = columns, results",
+  "report_script": "\nif \"employee_name\" in filters:\n    filters[\"employee_name\"] = [\"like\", f\"%{filters['employee_name']}%\"]\n\nresults = frappe.get_all('Task',\n    fields=[\"name\", \"subject\", \"status\",\"customer\",\"created_date\",\"service_due\",\"employee_name\",\"due_date\",\"employee_due_time\",\"employee_actual_time\",\"employee_extratime\"],\n    filters=filters,\n    order_by=\"name ASC\"\n)\n\ncolumns = [\n    {\"fieldname\": \"name\", \"label\": _(\"Job\"), \"fieldtype\": \"Link\", \"options\": \"Task\", \"width\": 150},\n    {\"fieldname\": \"subject\", \"label\": _(\"Subject\"), \"fieldtype\": \"Data\", \"width\": 150},\n    {\"fieldname\": \"status\", \"label\": _(\"Status\"), \"fieldtype\": \"Data\", \"width\": 100},\n    {\"fieldname\": \"customer\", \"label\": _(\"Customer\"), \"fieldtype\": \"Link\", \"options\":\"Customer\",\"width\": 100},\n    {\"fieldname\": \"created_date\", \"label\": _(\"Created Date\"), \"fieldtype\": \"Date\", \"width\": 100},\n    {\"fieldname\": \"employee_name\", \"label\": _(\"Assigned to\"), \"fieldtype\": \"Data\", \"width\": 100},\n    {\"fieldname\": \"service_due\", \"label\": _(\"Service Due\"), \"fieldtype\": \"Date\", \"width\": 100},\n    {\"fieldname\": \"due_date\", \"label\": _(\"Job Due Date\"), \"fieldtype\": \"Date\", \"width\": 110},\n    {\"fieldname\": \"employee_due_time\", \"label\": _(\"Due Time (In Hours)\"), \"fieldtype\": \"Data\", \"width\": 120},\n    {\"fieldname\": \"employee_actual_time\", \"label\": _(\"Actual Time Taken by Employee\"), \"fieldtype\": \"Data\", \"width\": 100},\n    {\"fieldname\": \"employee_extratime\", \"label\": _(\"Extra Time Taken by Employee\"), \"fieldtype\": \"Data\", \"width\": 100},\n\n\n\n\n\n\n\n]\n\ndata = columns, results",
   "report_type": "Script Report",
   "roles": [
    {
@@ -6270,7 +6292,7 @@
   ]
  },
  {
-  "add_total_row": 0,
+  "add_total_row": 1,
   "columns": [],
   "disable_prepared_report": 1,
   "disabled": 0,
@@ -6298,13 +6320,35 @@
     "parentfield": "filters",
     "parenttype": "Report",
     "wildcard_filter": 0
+   },
+   {
+    "fieldname": "expense_type",
+    "fieldtype": "Link",
+    "label": "Expense Type",
+    "mandatory": 0,
+    "options": "Expense Claim Type",
+    "parent": "Expense Claim Report",
+    "parentfield": "filters",
+    "parenttype": "Report",
+    "wildcard_filter": 0
+   },
+   {
+    "fieldname": "name",
+    "fieldtype": "Link",
+    "label": "Expense ID",
+    "mandatory": 0,
+    "options": "Expense Claim",
+    "parent": "Expense Claim Report",
+    "parentfield": "filters",
+    "parenttype": "Report",
+    "wildcard_filter": 0
    }
   ],
   "is_standard": "No",
   "javascript": null,
   "json": null,
   "letter_head": "Confederate",
-  "modified": "2024-03-08 16:28:06.984231",
+  "modified": "2024-03-11 10:06:25.605000",
   "module": "Accounts",
   "name": "Expense Claim Report",
   "parent": null,
@@ -6315,7 +6359,7 @@
   "ref_doctype": "Expense Claim",
   "reference_report": null,
   "report_name": "Expense Claim Report",
-  "report_script": "results = frappe.get_all('Expense Claim',\n    fields=[\"name\", \"employee_name\",\"approval_status\",],\n    filters=filters,\n   \n)\n\nexpense_claim_details = frappe.get_all('Expense Claim Detail',\n    fields=[\"parent\", \"customer\", \"expense_date\", \"description\", \"expense_type\", \"amount\", \"sanctioned_amount\"],\n   \n)\n\nfor result in results:\n    expense_claim_name = result.get('name')\n    for detail in expense_claim_details:\n        if detail.get('parent') == expense_claim_name:\n            result.update(detail) \ncolumns = [\n    {\"fieldname\": \"name\", \"label\": _(\"Expense Claim ID\"), \"fieldtype\": \"Data\", \"width\": 150},\n    {\"fieldname\": \"employee_name\", \"label\": _(\"Employee Name\"), \"fieldtype\": \"Data\", \"width\": 100},\n    {\"fieldname\": \"approval_status\", \"label\": _(\"Status\"), \"fieldtype\": \"Select\", \"options\": [\"Draft\", \"Approved\", \"Rejected\"], \"width\": 100},\n    {\"fieldname\": \"customer\", \"label\": _(\"Customer\"), \"fieldtype\": \"Data\", \"width\": 100},\n    {\"fieldname\": \"expense_date\", \"label\": _(\"Expense Date\"), \"fieldtype\": \"Date\", \"width\": 100},\n    {\"fieldname\": \"description\", \"label\": _(\"Description\"), \"fieldtype\": \"Data\", \"width\": 150},\n    {\"fieldname\": \"expense_type\", \"label\": _(\"Expense Type\"), \"fieldtype\": \"Data\", \"width\": 100},\n    {\"fieldname\": \"amount\", \"label\": _(\"Amount\"), \"fieldtype\": \"Currency\", \"width\": 100},\n    {\"fieldname\": \"sanctioned_amount\", \"label\": _(\"Sanctioned Amount\"), \"fieldtype\": \"Currency\", \"width\": 100}\n]\n\ndata = columns, results",
+  "report_script": "results = frappe.get_all('Expense Claim',\n    fields=[\"name\", \"employee_name\", \"approval_status\"],\n    filters=filters,\n    order_by=\"name ASC\" \n)\n\ndata = []\n\nfor result in results:\n    expense_claim_name = result.get('name')\n    expense_claim_details = frappe.get_all('Expense Claim Detail',\n        fields=[\"parent\", \"customer\", \"expense_date\", \"description\", \"expense_type\", \"amount\", \"sanctioned_amount\"],\n        filters={\"parent\": expense_claim_name}\n    )\n    for detail in expense_claim_details:\n        row = result.copy() \n        row.update(detail)\n        if \"customer\" in filters: \n            if detail.get(\"customer\") == filters.get(\"customer\"):\n                if \"expense_type\" in filters:  # Check if expense_type filter is applied\n                    if detail.get(\"expense_type\") == filters.get(\"expense_type\"):\n                        data.append(row)\n                else:\n                    data.append(row)\n        else: \n            if \"expense_type\" in filters:  \n                if detail.get(\"expense_type\") == filters.get(\"expense_type\"):\n                    data.append(row)\n            else:\n                data.append(row)     \n\ncolumns = [\n    {\"fieldname\": \"name\", \"label\": _(\"Expense Claim ID\"), \"fieldtype\": \"Link\",\"options\":\"Expense Claim\", \"width\": 150},\n    {\"fieldname\": \"employee_name\", \"label\": _(\"Employee \"), \"fieldtype\": \"Data\", \"width\": 100},\n    {\"fieldname\": \"approval_status\", \"label\": _(\"Status\"), \"fieldtype\": \"Select\", \"options\": [\"Draft\", \"Approved\", \"Rejected\"], \"width\": 100},\n    {\"fieldname\": \"customer\", \"label\": _(\"Customer\"), \"fieldtype\": \"Link\",\"options\":\"Customer\", \"width\": 100},\n    {\"fieldname\": \"expense_date\", \"label\": _(\"Expense Date\"), \"fieldtype\": \"Date\", \"width\": 120},\n    {\"fieldname\": \"description\", \"label\": _(\"Description\"), \"fieldtype\": \"Data\", \"width\": 150},\n    {\"fieldname\": \"expense_type\", \"label\": _(\"Expense Type\"), \"fieldtype\": \"Link\",\"options\":\"Expense Claim Type\", \"width\": 120},\n    {\"fieldname\": \"amount\", \"label\": _(\"Amount\"), \"fieldtype\": \"Currency\", \"width\": 100},\n    {\"fieldname\": \"sanctioned_amount\", \"label\": _(\"Sanctioned Amount\"), \"fieldtype\": \"Currency\", \"width\": 150}\n]\n\ndata = columns, data\n",
   "report_type": "Script Report",
   "roles": [
    {
